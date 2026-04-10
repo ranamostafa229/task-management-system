@@ -16,19 +16,25 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { signupSchema } from "@/lib/zodSchemas";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 
 const SignUp = () => {
-  const { control } = useForm({
+  const { control, handleSubmit } = useForm({
+    resolver: zodResolver(signupSchema),
     defaultValues: {
       name: "",
       email: "",
-      jobTitle: "",
       password: "",
       confirmPassword: "",
+      jobTitle: "",
     },
   });
+  const onSubmit = (data: any) => {
+    console.log(data);
+  };
   return (
     <div className="flex items-center justify-center min-h-screen ">
       <Card className="max-w-xl w-full mx-auto rounded-md py-12 px-12 mb-4 ">
@@ -41,7 +47,7 @@ const SignUp = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
               <Controller
                 name="name"
@@ -151,7 +157,7 @@ const SignUp = () => {
                   )}
                 />
                 <Controller
-                  name="password"
+                  name="confirmPassword"
                   control={control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
