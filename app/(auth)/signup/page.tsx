@@ -16,13 +16,21 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { signupSchema } from "@/lib/zodSchemas";
+import { signupSchema, SignUpSchemaType } from "@/lib/zodSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
+import { tryCatch } from "@/hooks/try-catch";
+import { toast } from "sonner";
+import { SignUpAction } from "./action";
+import { useTransition } from "react";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const SignUp = () => {
-  const { control, handleSubmit } = useForm({
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+  const { control, handleSubmit, reset } = useForm({
     resolver: zodResolver(signupSchema),
     defaultValues: {
       name: "",
@@ -32,8 +40,21 @@ const SignUp = () => {
       jobTitle: "",
     },
   });
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = async (data: SignUpSchemaType) => {
+    startTransition(async () => {
+      const { data: result, error } = await tryCatch(SignUpAction(data));
+      if (error) {
+        console.error("Signup failed:", error);
+        toast.error("An error occurred during signup. Please try again.");
+      }
+      if (result?.status === "success") {
+        toast.success(result?.message || "Signup successful");
+        reset();
+        router.push("/");
+      } else {
+        toast.error(result?.message || "Failed to signup. Please try again.");
+      }
+    });
   };
   return (
     <div className="flex items-center justify-center min-h-screen ">
@@ -183,8 +204,16 @@ const SignUp = () => {
                   )}
                 />
               </div>
-              <Button className="font-semibold h-12 rounded-sm" size="lg">
-                Create Account
+              <Button
+                className="font-semibold h-12 rounded-sm"
+                size="lg"
+                disabled={isPending}
+              >
+                {isPending ? (
+                  <Loader2 className="mr-2 animate-spin" />
+                ) : (
+                  "Create Account"
+                )}
               </Button>
             </FieldGroup>
           </form>
