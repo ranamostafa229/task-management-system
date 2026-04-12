@@ -1,20 +1,14 @@
 "use client";
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { FieldGroup } from "@/components/ui/field";
+import { FormField } from "@/components/general/FormField";
 import { tryCatch } from "@/hooks/try-catch";
 import { signupSchema, SignUpSchemaType } from "@/lib/zodSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { SignUpAction } from "../action";
 import { toast } from "sonner";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 
@@ -50,129 +44,41 @@ const SignupForm = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <FieldGroup>
-        <Controller
+        <FormField
           name="name"
           control={control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="form-name" className="text-muted-foreground">
-                NAME
-              </FieldLabel>
-              <Input
-                {...field}
-                id="form-name"
-                aria-invalid={fieldState.invalid}
-                placeholder="Enter your full name"
-                autoComplete="off"
-                className="bg-input rounded-sm text-base py-3.5 px-4 h-12"
-              />
-              <FieldDescription className="text-border text-[11px]">
-                3-50 characters, letters only.
-              </FieldDescription>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
+          label="NAME"
+          placeholder="Enter your full name"
+          description="3-50 characters, letters only."
         />
-        <Controller
+        <FormField
           name="email"
           control={control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel
-                htmlFor="form-email"
-                className="text-muted-foreground"
-              >
-                EMAIL
-              </FieldLabel>
-              <Input
-                {...field}
-                id="form-email"
-                type="email"
-                aria-invalid={fieldState.invalid}
-                placeholder="yourname@company.com"
-                autoComplete="off"
-                className="bg-input rounded-sm text-base py-3.5 px-4 h-12"
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
+          label="EMAIL"
+          type="email"
+          placeholder="yourname@company.com"
         />
-        <Controller
+        <FormField
           name="jobTitle"
           control={control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel
-                htmlFor="form-job-title"
-                className="text-muted-foreground"
-              >
-                Job Title (Optional)
-              </FieldLabel>
-              <Input
-                {...field}
-                id="form-job-title"
-                type="text"
-                aria-invalid={fieldState.invalid}
-                placeholder="e.g. Project Manager"
-                autoComplete="off"
-                className="bg-input rounded-sm text-base py-3.5 px-4 h-12"
-              />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
+          label="Job Title"
+          placeholder="e.g. Project Manager"
+          required={false}
         />
         <div className="flex gap-4">
-          <Controller
+          <FormField
             name="password"
             control={control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel
-                  htmlFor="form-password"
-                  className="text-muted-foreground"
-                >
-                  PASSWORD
-                </FieldLabel>
-                <Input
-                  {...field}
-                  id="form-password"
-                  type="password"
-                  aria-invalid={fieldState.invalid}
-                  placeholder="Minimum 8 characters"
-                  autoComplete="off"
-                  className="bg-input rounded-sm text-base py-3.5 px-4 h-12"
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
+            label="PASSWORD"
+            type="password"
+            placeholder="Minimum 8 characters"
           />
-          <Controller
+          <FormField
             name="confirmPassword"
             control={control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel
-                  htmlFor="form-confirm-password"
-                  className="text-muted-foreground"
-                >
-                  CONFIRM PASSWORD
-                </FieldLabel>
-                <Input
-                  {...field}
-                  id="form-confirm-password"
-                  type="password"
-                  aria-invalid={fieldState.invalid}
-                  placeholder="Repeat your password"
-                  autoComplete="off"
-                  className="bg-input rounded-sm text-base py-3.5 px-4 h-12"
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
+            label="CONFIRM PASSWORD"
+            type="password"
+            placeholder="Repeat your password"
           />
         </div>
         <Button
