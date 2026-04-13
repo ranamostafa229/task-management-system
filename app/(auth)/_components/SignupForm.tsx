@@ -1,14 +1,14 @@
 "use client";
 import { FieldGroup } from "@/components/ui/field";
 import { FormField } from "@/components/general/FormField";
-import { PasswordRequirements } from "@/app/(auth)/signup/_components/PasswordRequirements";
+import { PasswordRequirements } from "@/app/(auth)/_components/PasswordRequirements";
 import { tryCatch } from "@/hooks/try-catch";
 import { signupSchema, SignUpSchemaType } from "@/lib/zodSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { SignUpAction } from "../action";
+import { SignUpAction } from "../signup/action";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -88,6 +88,7 @@ const SignupForm = () => {
         </div>
         {<PasswordRequirements password={password} />}
         <Button
+          type="submit"
           className="font-semibold h-12 rounded-sm cursor-pointer"
           size="lg"
           disabled={isPending}
