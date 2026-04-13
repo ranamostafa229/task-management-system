@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { PASSWORD_REQUIREMENTS } from "./password-requirements";
 
 export const signupSchema = z
   .object({
@@ -16,14 +17,16 @@ export const signupSchema = z
       .min(8, { error: "Password must be at least 8 characters" })
       .max(64, { error: "Password must be less than 64 characters" })
       .regex(/^\S*$/, { error: "Password cannot contain white-space" })
-      .regex(/[A-Z]/, {
+      .regex(PASSWORD_REQUIREMENTS[0].pattern, {
         error: "Password must contain at least one uppercase letter",
       })
-      .regex(/[a-z]/, {
+      .regex(PASSWORD_REQUIREMENTS[1].pattern, {
         error: "Password must contain at least one lowercase letter",
       })
-      .regex(/[0-9]/, { error: "Password must contain at least one digit" })
-      .regex(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/, {
+      .regex(PASSWORD_REQUIREMENTS[2].pattern, {
+        error: "Password must contain at least one digit",
+      })
+      .regex(PASSWORD_REQUIREMENTS[5].pattern, {
         error: "Password must contain at least one special character",
       }),
     confirmPassword: z

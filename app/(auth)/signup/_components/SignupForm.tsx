@@ -1,12 +1,13 @@
 "use client";
 import { FieldGroup } from "@/components/ui/field";
 import { FormField } from "@/components/general/FormField";
+import { PasswordRequirements } from "@/app/(auth)/signup/_components/PasswordRequirements";
 import { tryCatch } from "@/hooks/try-catch";
 import { signupSchema, SignUpSchemaType } from "@/lib/zodSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { SignUpAction } from "../action";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,10 @@ const SignupForm = () => {
       jobTitle: "",
     },
   });
+
+  // suscribe only when password changes and not the entire form , now component will re-render only when password field changes
+  const password = useWatch({ control, name: "password" });
+
   const onSubmit = async (data: SignUpSchemaType) => {
     startTransition(async () => {
       const { data: result, error } = await tryCatch(SignUpAction(data));
@@ -81,6 +86,7 @@ const SignupForm = () => {
             placeholder="Repeat your password"
           />
         </div>
+        {<PasswordRequirements password={password} />}
         <Button
           className="font-semibold h-12 rounded-sm cursor-pointer"
           size="lg"
