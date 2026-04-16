@@ -1,16 +1,19 @@
 "use client";
 import { FormField } from "@/components/general/FormField";
-import { Button } from "@/components/ui/button";
-import { FieldGroup } from "@/components/ui/field";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Field, FieldGroup } from "@/components/ui/field";
 import { tryCatch } from "@/hooks/try-catch";
 import { loginSchema, LoginSchemaType } from "@/lib/zodSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { LoginAction } from "../login/action";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import Link from "next/link";
 
 const LoginForm = () => {
   const [isPending, startTransition] = useTransition();
@@ -20,6 +23,7 @@ const LoginForm = () => {
     defaultValues: {
       email: "",
       password: "",
+      rememberMe: false,
     },
   });
   const onSubmit = async (data: LoginSchemaType) => {
@@ -60,6 +64,30 @@ const LoginForm = () => {
           required
           type="password"
         />
+        <div className="flex">
+          <Controller
+            name="rememberMe"
+            control={control}
+            render={({ field }) => (
+              <Field orientation="horizontal">
+                <Checkbox
+                  id="remember-me"
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+                <Label htmlFor="remember-me">Remember Me</Label>
+              </Field>
+            )}
+          />
+          <Link
+            href={"/forgot-password"}
+            className={buttonVariants({
+              variant: "link",
+            })}
+          >
+            Forgot Password?
+          </Link>
+        </div>
         <Button
           type="submit"
           className="font-semibold h-12 rounded-sm cursor-pointer"

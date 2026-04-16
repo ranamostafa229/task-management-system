@@ -10,6 +10,7 @@ export async function LoginAction(
 ): Promise<LoginResponse> {
   try {
     const validation = loginSchema.safeParse(data);
+
     if (!validation.success) {
       return {
         status: "error",
@@ -20,7 +21,10 @@ export async function LoginAction(
       `${env.BASE_URL}/auth/v1/token?grant_type=password`,
       {
         method: "POST",
-        body: JSON.stringify(validation.data),
+        body: JSON.stringify({
+          email: validation.data.email,
+          password: validation.data.password,
+        }),
         headers: {
           apikey: env.API_KEY,
         },
@@ -37,17 +41,30 @@ export async function LoginAction(
       };
     }
     const cookieStore = await cookies(); // in server actions , cookies is async, on the other hand in middleware and route handlers , cookies is sync
-    cookieStore.set("access_token", result.access_token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      maxAge: result.expires_in,
-    });
+
+    if (validation.data.rememberMe) {
+      cookieStore.set("access_token", result.access_token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: result.expires_in,
+        path: "/", // Ensure the cookie is sent on all routes
+      });
+    } else {
+      cookieStore.set("access_token", result.access_token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        path: "/", // Ensure the cookie is sent on all routes
+      });
+    }
+
     cookieStore.set("refresh_token", result.refresh_token, {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
       maxAge: 60 * 60 * 24 * 30, // 30 days
+      path: "/", // Ensure the cookie is sent on all routes
     });
     return {
       status: "success",

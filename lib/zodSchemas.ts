@@ -43,6 +43,7 @@ export const signupSchema = z
 export const loginSchema = z.object({
   email: z.email({ error: "Please enter a valid email address" }),
   password: z.string().min(8, { error: "Password is required" }),
+  rememberMe: z.boolean().optional(),
 });
 export type SignUpSchemaType = z.infer<typeof signupSchema>;
 export type LoginSchemaType = z.infer<typeof loginSchema>;
