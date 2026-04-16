@@ -66,7 +66,7 @@ const SignupForm = () => {
         <FormField
           name="jobTitle"
           control={control}
-          label="Job Title"
+          label="JOB TITLE"
           placeholder="e.g. Project Manager"
           required={false}
         />

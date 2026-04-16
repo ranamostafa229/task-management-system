@@ -48,7 +48,7 @@ export const FormField = <
             className="text-muted-foreground"
           >
             {label}
-            {!required && <span className="text-gray-500">(Optional)</span>}
+            {!required && <span className="text-gray-500">(OPTIONAL)</span>}
           </FieldLabel>
           <Input
             {...field}

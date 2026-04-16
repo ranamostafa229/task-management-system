@@ -1,10 +1,13 @@
 "use server";
 
 import { env } from "@/lib/env";
-import { ApiResponse } from "@/lib/types";
+import { LoginResponse } from "@/lib/types";
 import { loginSchema, LoginSchemaType } from "@/lib/zodSchemas";
+import { cookies } from "next/headers";
 
-export async function LoginAction(data: LoginSchemaType): Promise<ApiResponse> {
+export async function LoginAction(
+  data: LoginSchemaType,
+): Promise<LoginResponse> {
   try {
     const validation = loginSchema.safeParse(data);
     if (!validation.success) {
@@ -23,18 +26,35 @@ export async function LoginAction(data: LoginSchemaType): Promise<ApiResponse> {
         },
       },
     );
+    const result = await response.json();
+
     if (!response.ok) {
-      const errorData = await response.json();
       return {
         status: "error",
         message:
-          errorData.msg ||
+          result.msg ||
           "Failed to login. Please check your credentials and try again.",
       };
     }
+    const cookieStore = await cookies(); // in server actions , cookies is async, on the other hand in middleware and route handlers , cookies is sync
+    cookieStore.set("access_token", result.access_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      maxAge: result.expires_in,
+    });
+    cookieStore.set("refresh_token", result.refresh_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+    });
     return {
       status: "success",
       message: "Login successful",
+      access_token: result.access_token,
+      refresh_token: result.refresh_token,
+      user: result.user,
     };
   } catch {
     return {
