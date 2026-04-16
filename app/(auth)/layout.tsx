@@ -1,7 +1,15 @@
 import Logo from "@/components/icons/Logo";
 import { Card } from "@/components/ui/card";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-const AuthLayout = ({ children }: { children: React.ReactNode }) => {
+const AuthLayout = async ({ children }: { children: React.ReactNode }) => {
+  const cookiesStore = await cookies();
+  const accessToken = cookiesStore.get("access_token")?.value;
+
+  if (accessToken) {
+    redirect("/dashboard");
+  }
   return (
     <div>
       <div className="flex items-center gap-1.5 pl-10 pt-5">
