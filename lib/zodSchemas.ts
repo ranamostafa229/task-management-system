@@ -45,5 +45,10 @@ export const loginSchema = z.object({
   password: z.string().min(8, { error: "Password is required" }),
   rememberMe: z.boolean().optional(),
 });
+
+export const forgotPasswordSchema = z.object({
+  email: z.email({ error: "Please enter a valid email address" }),
+});
 export type SignUpSchemaType = z.infer<typeof signupSchema>;
 export type LoginSchemaType = z.infer<typeof loginSchema>;
+export type ForgotPasswordSchemaType = z.infer<typeof forgotPasswordSchema>;

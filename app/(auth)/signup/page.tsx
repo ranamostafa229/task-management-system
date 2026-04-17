@@ -3,7 +3,7 @@ import SignupForm from "../_components/SignupForm";
 import AuthHeader from "../_components/AuthHeader";
 import AuthFooter from "../_components/AuthFooter";
 
-const SignUp = () => {
+const SignUpPage = () => {
   return (
     <>
       <AuthHeader
@@ -22,4 +22,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignUpPage;
