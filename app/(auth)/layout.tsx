@@ -1,4 +1,4 @@
-import Logo from "@/components/icons/Logo";
+import { Logo } from "@/components/icons/icon";
 import { Card } from "@/components/ui/card";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";

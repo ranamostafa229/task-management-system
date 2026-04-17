@@ -1,7 +1,5 @@
 import { CardContent } from "@/components/ui/card";
 import AuthHeader from "../_components/AuthHeader";
-import AuthFooter from "../_components/AuthFooter";
-import { ArrowLeft } from "lucide-react";
 import ForgotPasswordForm from "../_components/ForgotPasswordForm";
 
 const ForgotPasswordPage = () => {
@@ -14,11 +12,6 @@ const ForgotPasswordPage = () => {
       />
       <CardContent>
         <ForgotPasswordForm />
-        <AuthFooter
-          href="/login"
-          linkText="Back to log in"
-          icon={<ArrowLeft className="inline text-primary w-5" />}
-        />
       </CardContent>
     </div>
   );
