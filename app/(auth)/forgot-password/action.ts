@@ -28,7 +28,7 @@ export async function forgotPasswordAction(
     });
     if (!response.ok) {
       return {
-        message: "Failed to send reset link. Please try again.",
+        message: "Failed to send reset link. Please try again later.",
         status: "error",
       };
     }

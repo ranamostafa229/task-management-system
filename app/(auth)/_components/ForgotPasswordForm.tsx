@@ -9,7 +9,7 @@ import {
 } from "@/lib/zodSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, CheckCircle2Icon, Loader2 } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { forgotPasswordAction } from "../forgot-password/action";
 import { toast } from "sonner";
@@ -20,6 +20,8 @@ import { ClockIcon } from "@/components/icons/icon";
 const ForgotPasswordForm = () => {
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [resendAttempts, setResendAttempts] = useState(0);
 
   const { control, handleSubmit } = useForm({
     resolver: zodResolver(forgotPasswordSchema),
@@ -43,15 +45,26 @@ const ForgotPasswordForm = () => {
         setMessage(
           "If an account exists with this email, we’ve sent a password reset link.",
         );
+        setResendAttempts((prev) => prev + 1);
+        setTimeLeft(300); // 5 minutes in seconds
         toast.success(result?.message || "Reset link sent successfully.");
       } else {
         toast.error(
-          result?.message || "Failed to send reset link. Please try again.",
+          result?.message ||
+            "Failed to send reset link. Please try again later.",
         );
       }
     });
   };
 
+  // countdown timer for resend button
+  useEffect(() => {
+    if (timeLeft <= 0) return;
+    const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  const isResendDisabled = timeLeft > 0 || resendAttempts >= 3;
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -68,9 +81,9 @@ const ForgotPasswordForm = () => {
             type="submit"
             className="font-semibold h-12 rounded-sm cursor-pointer"
             size="lg"
-            disabled={isPending}
+            disabled={isPending || resendAttempts > 0}
           >
-            {isPending ? (
+            {isPending && resendAttempts === 0 ? (
               <Loader2 className="mr-2 animate-spin" />
             ) : (
               "Send Reset Link"
@@ -98,14 +111,19 @@ const ForgotPasswordForm = () => {
             className="font-semibold h-12 rounded-sm cursor-pointer
            bg-muted text-muted-foreground "
             size="lg"
-            disabled={false}
+            disabled={isResendDisabled || isPending}
+            onClick={handleSubmit(onSubmit)}
           >
             {isPending ? (
               <Loader2 className="mr-2 animate-spin" />
             ) : (
               <span className="flex items-center gap-1">
                 <ClockIcon />
-                Resend in 05:00
+                {isResendDisabled
+                  ? resendAttempts >= 3
+                    ? "No more attempts"
+                    : `Resend in ${Math.floor(timeLeft / 60)}:${String(timeLeft % 60).padStart(2, "0")}`
+                  : "Resend Email"}
               </span>
             )}
           </Button>
