@@ -49,6 +49,36 @@ export const loginSchema = z.object({
 export const forgotPasswordSchema = z.object({
   email: z.email({ error: "Please enter a valid email address" }),
 });
+
+export const resetPasswordSchema = z
+  .object({
+    newPassword: z
+      .string()
+      .min(8, { error: "Password must be at least 8 characters" })
+      .max(64, { error: "Password must be less than 64 characters" })
+      .regex(/^\S*$/, { error: "Password cannot contain white-space" })
+      .regex(PASSWORD_REQUIREMENTS[0].pattern, {
+        error: "Password must contain at least one uppercase letter",
+      })
+      .regex(PASSWORD_REQUIREMENTS[1].pattern, {
+        error: "Password must contain at least one lowercase letter",
+      })
+      .regex(PASSWORD_REQUIREMENTS[2].pattern, {
+        error: "Password must contain at least one digit",
+      })
+      .regex(PASSWORD_REQUIREMENTS[5].pattern, {
+        error: "Password must contain at least one special character",
+      }),
+    confirmPassword: z
+      .string()
+      .min(8, { error: "Confirm Password is required" }),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    error: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
 export type SignUpSchemaType = z.infer<typeof signupSchema>;
 export type LoginSchemaType = z.infer<typeof loginSchema>;
 export type ForgotPasswordSchemaType = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordSchemaType = z.infer<typeof resetPasswordSchema>;
