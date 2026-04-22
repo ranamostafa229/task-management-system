@@ -11,9 +11,14 @@ export default function Home() {
     const params = new URLSearchParams(hash); // to treat the string as query params
     const type = params.get("type");
     const token = params.get("access_token");
+    const error = params.get("error");
 
-    if (type === "recovery" && token) {
+    if (type === "recovery" && token && !error) {
       router.replace(`/reset-password?token=${token}`);
+    } else if (error) {
+      router.replace(`/reset-password`);
+    } else {
+      router.replace(`/login`);
     }
   }, [router]);
   return <div></div>;

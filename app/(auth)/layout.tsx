@@ -8,7 +8,7 @@ const AuthLayout = async ({ children }: { children: React.ReactNode }) => {
   const accessToken = cookiesStore.get("access_token")?.value;
 
   if (accessToken) {
-    redirect("/dashboard");
+    redirect("/project");
   }
   return (
     <div>

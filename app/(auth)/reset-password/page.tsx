@@ -4,6 +4,8 @@ import { AlertTriangleIcon } from "lucide-react";
 import AuthHeader from "../_components/AuthHeader";
 import { CardContent } from "@/components/ui/card";
 import AuthFooter from "../_components/AuthFooter";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 
 const ResetPasswordPage = async ({
   searchParams,
@@ -19,6 +21,15 @@ const ResetPasswordPage = async ({
         <AlertTitle>Reset link failed</AlertTitle>
         <AlertDescription>
           The reset link is invalid or has expired. Please request a new one.
+          <Link
+            className={buttonVariants({
+              variant: "link",
+              className: "text-destructive!",
+            })}
+            href="/forgot-password"
+          >
+            Request a new reset link
+          </Link>
         </AlertDescription>
       </Alert>
     );

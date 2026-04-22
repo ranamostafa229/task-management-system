@@ -2,15 +2,25 @@ import { NextRequest, NextResponse } from "next/server";
 import { refreshAccessToken } from "./lib/auth";
 
 export async function proxy(req: NextRequest) {
+  const { pathname } = req.nextUrl;
   const accessToken = req.cookies.get("access_token")?.value;
   const refreshToken = req.cookies.get("refresh_token")?.value;
 
-  const authPages = ["/login", "/signup"];
-  if (accessToken && authPages.includes(req.nextUrl.pathname)) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+  const publicPages = [
+    "/",
+    "/login",
+    "/signup",
+    "/forgot-password",
+    "/reset-password",
+  ];
+  const isPublicPage = publicPages.includes(pathname);
+
+  if (accessToken && publicPages.includes(pathname)) {
+    return NextResponse.redirect(new URL("/project", req.url));
   }
-  // If access token is missing but refresh token exists => refresh
-  if (!accessToken && req.nextUrl.pathname.startsWith("/dashboard")) {
+
+  // Protect all non-public app routes (e.g. routes under (dashboard) group).
+  if (!accessToken && !isPublicPage) {
     if (refreshToken) {
       const res = await refreshAccessToken(refreshToken);
       if (res) return res;
@@ -24,5 +34,7 @@ export async function proxy(req: NextRequest) {
   return NextResponse.next();
 }
 export const config = {
-  matcher: ["/login", "/signup", "/dashboard/:path*"],
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+  ],
 };

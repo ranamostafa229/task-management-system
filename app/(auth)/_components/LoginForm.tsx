@@ -35,7 +35,7 @@ const LoginForm = () => {
       }
       if (result?.status === "success") {
         toast.success(result?.message || "Login successful");
-        router.push("/");
+        router.push("/project");
       } else {
         toast.error(
           result?.message ||
