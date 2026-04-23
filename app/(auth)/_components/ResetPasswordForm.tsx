@@ -43,7 +43,7 @@ const ResetPasswordForm = () => {
             "Your password has been updated successfully. You can now log in.",
         );
         setTimeout(() => {
-          router.push("/login");
+          router.replace("/login");
         }, 3000); // Redirect to login after 3 seconds
       } else {
         toast.error(
