@@ -1,11 +1,10 @@
 import { Logo } from "@/components/icons/icon";
 import { Card } from "@/components/ui/card";
-import { cookies } from "next/headers";
+import { getAccessTokenFromCookies } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 const AuthLayout = async ({ children }: { children: React.ReactNode }) => {
-  const cookiesStore = await cookies();
-  const accessToken = cookiesStore.get("access_token")?.value;
+  const accessToken = await getAccessTokenFromCookies();
 
   if (accessToken) {
     redirect("/project");

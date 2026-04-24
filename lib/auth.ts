@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { env } from "./env";
+import { cookies } from "next/headers";
 
 export async function refreshAccessToken(refreshToken: string) {
   const response = await fetch(
@@ -33,4 +34,10 @@ export async function refreshAccessToken(refreshToken: string) {
     return res;
   }
   return null;
+}
+
+export async function getAccessTokenFromCookies(): Promise<string | null> {
+  const cookiesStore = await cookies();
+  const accessToken = cookiesStore.get("access_token")?.value ?? null;
+  return accessToken;
 }
