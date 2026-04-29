@@ -1,4 +1,4 @@
-import { Logo } from "@/components/icons/icon";
+import { LogoIcon } from "@/components/icons/icon";
 import { Card } from "@/components/ui/card";
 import { getAccessTokenFromCookies } from "@/lib/auth";
 import { redirect } from "next/navigation";
@@ -12,7 +12,7 @@ const AuthLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
       <div className="flex items-center gap-1.5 pl-10 pt-5">
-        <Logo />
+        <LogoIcon />
         <span className="text-xl font-bold">TASKLY</span>
       </div>
       <div className="flex items-center justify-center min-h-screen ">
